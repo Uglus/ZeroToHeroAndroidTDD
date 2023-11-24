@@ -7,7 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-    private var count: Count = Count.Initialize
+    private var count: Count = Count.Base(step = 2)
     private var numberData = NumberData(number = 0)
     private var countTextViewState: CountTextViewState = CountTextViewState.Initial
     private lateinit var countTextView: TextView
@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
         val incrementButton: Button = findViewById(R.id.incrementButton)
         incrementButton.setOnClickListener {
             countTextViewState = CountTextViewState.Increment
-            count = Count.Base(step = 2)
             countTextViewState.apply(
                 textView = countTextView,
                 count = count,
