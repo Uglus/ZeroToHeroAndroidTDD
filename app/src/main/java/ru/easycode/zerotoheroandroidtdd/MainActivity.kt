@@ -7,12 +7,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-    var removeTextViewState: RemoveTextViewState = RemoveTextViewState.Initial
-    var disabledViewState: DisabledViewState = DisabledViewState.Initial
+    private var removeTitleTextView: RemoveTitleTextView = RemoveTitleTextView.Initial // щоб не писати null
 
-    private lateinit var rootLayout : LinearLayout
-    private lateinit var titleTextView : TextView
-    private lateinit var removeButton : Button
+    private lateinit var rootLayout: LinearLayout
+    private lateinit var titleTextView: TextView
+    private lateinit var removeButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,10 +22,12 @@ class MainActivity : AppCompatActivity() {
         removeButton = findViewById(R.id.removeButton)
 
         removeButton.setOnClickListener {
-            removeTextViewState = RemoveTextViewState.Removed
-            removeTextViewState.apply(linearLayout = rootLayout, textView = titleTextView)
-            disabledViewState = DisabledViewState.Disabled
-            disabledViewState.apply(removeButton)
+            removeTitleTextView = RemoveTitleTextView.Removed
+            removeTitleTextView.apply(
+                linearLayout = rootLayout,
+                textView = titleTextView,
+                button = removeButton
+            )
         }
 
 
@@ -34,22 +35,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(IS_REMOVED_TITLE_KEY,removeTextViewState)
-        outState.putSerializable(IS_DISABLED_REMOVE_BUTTON_KEY,disabledViewState)
+        outState.putSerializable(IS_REMOVED_TITLE_KEY, removeTitleTextView)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        disabledViewState = savedInstanceState.getSerializable(IS_DISABLED_REMOVE_BUTTON_KEY) as DisabledViewState
-        disabledViewState.apply(removeButton)
-
-        removeTextViewState = savedInstanceState.getSerializable(IS_REMOVED_TITLE_KEY) as RemoveTextViewState
-        removeTextViewState.apply(linearLayout = rootLayout, textView = titleTextView)
+        removeTitleTextView =
+            savedInstanceState.getSerializable(IS_REMOVED_TITLE_KEY) as RemoveTitleTextView
+        removeTitleTextView.apply(
+            linearLayout = rootLayout,
+            textView = titleTextView,
+            button = removeButton
+        )
     }
 
     companion object {
         private const val IS_REMOVED_TITLE_KEY = "removedTitle"
-        private const val IS_DISABLED_REMOVE_BUTTON_KEY = "disabledRemoveButton"
     }
 
 }
