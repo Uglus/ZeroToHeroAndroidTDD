@@ -7,7 +7,8 @@ import android.widget.Button
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
-    private var incrementHelper: IncrementHelper = IncrementHelper()
+    private var count: Count = Count.Initialize
+    private var numberData = NumberData(number = 0)
     private var countTextViewState: CountTextViewState = CountTextViewState.Initial
     private lateinit var countTextView: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,27 +19,32 @@ class MainActivity : AppCompatActivity() {
         val incrementButton: Button = findViewById(R.id.incrementButton)
         incrementButton.setOnClickListener {
             countTextViewState = CountTextViewState.Increment
-            countTextViewState.apply(countTextView, incrementHelper)
+            count = Count.Base(step = 2)
+            countTextViewState.apply(
+                textView = countTextView,
+                count = count,
+                numberData = numberData
+            )
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(INCREMENT_KEY, incrementHelper)
+        outState.putSerializable(INCREMENT_KEY, numberData)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        incrementHelper = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        numberData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             savedInstanceState.getSerializable(
                 INCREMENT_KEY,
-                incrementHelper::class.java
-            ) as IncrementHelper
+                numberData::class.java
+            ) as NumberData
         } else
-            savedInstanceState.getSerializable(INCREMENT_KEY) as IncrementHelper
+            savedInstanceState.getSerializable(INCREMENT_KEY) as NumberData
 
         countTextViewState = CountTextViewState.Restore
-        countTextViewState.apply(textView = countTextView, incrementHelper = incrementHelper)
+        countTextViewState.apply(textView = countTextView, count = count, numberData = numberData)
     }
 
     companion object {
