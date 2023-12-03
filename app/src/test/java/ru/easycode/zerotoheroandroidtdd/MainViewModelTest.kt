@@ -59,7 +59,7 @@ private interface FakeLiveDataWrapper : LiveDataWrapper {
             actualCallsList.add(value)
         }
 
-        override fun liveData(): LiveData<UiState> {
+        override fun getLiveData(): LiveData<UiState> {
             throw IllegalStateException("not used in test")
         }
     }
